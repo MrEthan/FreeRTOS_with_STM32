@@ -62,3 +62,5 @@ dkms.conf
 /SI/FreeRTOS_V10.0.1_STM32.PRI
 /SI/FreeRTOS_V10.0.1_STM32.PS
 SI
+
+MDK-ARM
