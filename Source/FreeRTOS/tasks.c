@@ -731,7 +731,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 
 	BaseType_t xTaskCreate(	TaskFunction_t pxTaskCode,
 							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-							const configSTACK_DEPTH_TYPE usStackDepth,
+							const configSTACK_DEPTH_TYPE usStackDepth, /* 任务堆栈大小, 不是字节数。比如，在16位宽度的堆栈下，usStackDepth定义为100，则实际使用200字节堆栈存储空间。 */
 							void * const pvParameters,
 							UBaseType_t uxPriority,
 							TaskHandle_t * const pxCreatedTask )

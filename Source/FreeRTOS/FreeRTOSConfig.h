@@ -35,7 +35,7 @@
  * application requirements.
  *
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
- * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE. 
+ * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
@@ -43,7 +43,7 @@
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
-#define configCPU_CLOCK_HZ			( ( unsigned long ) 72000000 )	
+#define configCPU_CLOCK_HZ			( ( unsigned long ) 72000000 )
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 5 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )
@@ -65,8 +65,11 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelete				1
 #define INCLUDE_vTaskCleanUpResources	0
 #define INCLUDE_vTaskSuspend			1
-#define INCLUDE_vTaskDelayUntil			1
+#define INCLUDE_vTaskDelayUntil			1 //绝对延时vTaskDelayUntil()
 #define INCLUDE_vTaskDelay				1
+
+/* Define configASSERT() to disable interrupts and sit in a loop. */
+#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
 
 /* 定义操作系统中断为STM32底层中断 */
 #define vPortSVCHandler SVC_Handler

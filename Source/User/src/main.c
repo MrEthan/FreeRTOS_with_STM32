@@ -6,43 +6,40 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define LED_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
+
 static TaskHandle_t task_handle[10];
 
-extern char recv_buf[644];
-extern int index;
-/**********************************************/
-/*                                            */
-/*            LED周期性闪烁任务1              */
-/*                                            */
-/**********************************************/
+
 void LedTask1(void *data)
 {
+    BaseType_t ret;
+    uint32_t notify_val = 0;
     while(1){
-        led_toggle_0();
-        vTaskDelay(1);
-        if (index > 0){
-          index--;
-          printf("%c", recv_buf[index]);
+        /* 等待通知，任务进入阻塞状态 */
+        //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        ret = xTaskNotifyWait(UINT32_MAX, UINT32_MAX, &notify_val, portMAX_DELAY);
+        if (pdTRUE == ret){
+            printf("LedTask1 wakeup. notify_val:%d \r\n", notify_val);
+            led_toggle_0();
         }
     }
 }
 
-/**********************************************/
-/*                                            */
-/*            LED周期性闪烁任务2              */
-/*                                            */
-/**********************************************/
 void LedTask2(void *data)
 {
     while(1){
         led_toggle_1();
         printf("LedTask2 run\r\n");
+        /* 通知task1 */
+        //xTaskNotifyGive(task_handle[0]);
+        xTaskNotify(task_handle[0], 2, eSetBits);
         vTaskDelay(1000);
     }
 }
 
 int main(void)
-{ 
+{
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);             // 一定要将优先级分组设置分组方式4！！！
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
     //GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);   // 不使用JTAG调试，对应的IO口作为普通IO口使用
@@ -56,11 +53,11 @@ int main(void)
                 "LED_TASK1",   // 任务名称
                 128,            // 堆栈深度(字)
                 NULL,          // 任务参数为空
-                1,             // 任务优先级
+                LED_TASK_PRIORITY,             // 任务优先级
                 &task_handle[0]);        // 任务句柄
 
     /* 创建LED2任务 */
-    xTaskCreate(LedTask2, "LED_TASK2", 128, NULL, 2, NULL );
+    xTaskCreate(LedTask2, "LED_TASK2", 128, NULL, LED_TASK_PRIORITY, &task_handle[1]);
 
     /* 启动任务调度器(操作系统开始运行) */
     vTaskStartScheduler();

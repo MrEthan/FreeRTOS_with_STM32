@@ -105,8 +105,8 @@ extern "C" {
 /* Used by heap_5.c. */
 typedef struct HeapRegion
 {
-	uint8_t *pucStartAddress;
-	size_t xSizeInBytes;
+	uint8_t *pucStartAddress; /* 用于内存堆的内存块起始地址 */
+	size_t xSizeInBytes; /* 内存块大小 */
 } HeapRegion_t;
 
 /*
