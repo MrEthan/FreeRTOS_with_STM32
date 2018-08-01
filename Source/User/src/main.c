@@ -5,6 +5,7 @@
 /* FreeRTOS头文件 */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "debug.h"
 
 #define LED_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
 
@@ -20,7 +21,7 @@ void LedTask1(void *data)
         //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         ret = xTaskNotifyWait(UINT32_MAX, UINT32_MAX, &notify_val, portMAX_DELAY);
         if (pdTRUE == ret){
-            printf("LedTask1 wakeup. notify_val:%d \r\n", notify_val);
+            DDEBUG("LedTask1 wakeup. notify_val:%d \r\n", notify_val);
             led_toggle_0();
         }
     }
@@ -30,7 +31,7 @@ void LedTask2(void *data)
 {
     while(1){
         led_toggle_1();
-        printf("LedTask2 run\r\n");
+        DDEBUG("LedTask2 run\r\n");
         /* 通知task1 */
         //xTaskNotifyGive(task_handle[0]);
         xTaskNotify(task_handle[0], 2, eSetBits);
@@ -51,13 +52,13 @@ int main(void)
     /* 创建LED1任务 */
     xTaskCreate(LedTask1,      // 任务函数指针
                 "LED_TASK1",   // 任务名称
-                128,            // 堆栈深度(字)
+                1024,            // 堆栈深度(字)
                 NULL,          // 任务参数为空
                 LED_TASK_PRIORITY,             // 任务优先级
                 &task_handle[0]);        // 任务句柄
 
     /* 创建LED2任务 */
-    xTaskCreate(LedTask2, "LED_TASK2", 128, NULL, LED_TASK_PRIORITY, &task_handle[1]);
+    xTaskCreate(LedTask2, "LED_TASK2", 1024, NULL, LED_TASK_PRIORITY, &task_handle[1]);
 
     /* 启动任务调度器(操作系统开始运行) */
     vTaskStartScheduler();
