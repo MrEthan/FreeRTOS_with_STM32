@@ -1,19 +1,24 @@
 #include "stm32f10x.h"
 #include "usart.h"
 
-char recv_buf[64] = {0};
-int index = 0;
-
 //函数默认的，在使用printf函数时自动调用
 int fputc(int ch, FILE *p)
 {
 	USART_SendData(USART3,(u8)ch);
 	while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
-  
+
 	return ch;
 }
 
-
+void usart3_send(u8 *buf, int len)
+{
+    int i;
+    for (i = 0; i < len; i++){
+        USART_SendData(USART3, buf[i]);
+        while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
+    }
+    return;
+}
 /*******************************************************************************
 * 函 数 名         : USART1_Init
 * 函数功能		   : USART1初始化函数
@@ -133,6 +138,7 @@ void USART3_Init(u32 bound)
 
 }
 
+extern void fill_rec_buf_isr(char data);
 /*******************************************************************************
 * 函 数 名         : USART1_IRQHandler
 * 函数功能		   : USART1中断函数
@@ -145,10 +151,8 @@ void USART3_IRQHandler(void)                	//串口1中断服务程序
 	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)  //接收中断
 	{
 		r = USART_ReceiveData(USART3); 	//读取接收到的数据
-    recv_buf[index++] = r;
-		//USART_SendData(USART3, r);
-		//while(USART_GetFlagStatus(USART3, USART_FLAG_TC) != SET);
+        fill_rec_buf_isr(r);
 	}
-	USART_ClearFlag(USART3,USART_FLAG_TC);
+	USART_ClearFlag(USART3, USART_FLAG_TC);
 }
 
