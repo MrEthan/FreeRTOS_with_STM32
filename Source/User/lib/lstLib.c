@@ -28,9 +28,12 @@ void lstAddHead(LIST *p_list, NODE *p_node)
         //原链表为空，表尾指向新节点
         p_list->prev = p_node;
     }else{
-        //表尾不变
+        //表尾不变, 原第一个节点的prev指向新插入节点
+        p_list->next->prev = p_node;
     }
     p_list->next = p_node; //表头指向新节点
+
+    p_list->count++;
     return;
 }
 
@@ -44,9 +47,12 @@ void lstAddTail(LIST *p_list, NODE *p_node)
         //原链表为空，表头指向新节点
         p_list->next = p_node;
     }else{
-        //表头不变
+        //表头不变,原最后一个节点的next指向新插入节点
+        p_list->prev->next = p_node;
     }
     p_list->prev = p_node; //表尾指向新节点
+
+    p_list->count++;
     return;
 }
 
@@ -65,6 +71,7 @@ void lstInsert(LIST *p_list, NODE *p_prev, NODE *p_node)
         p_node->prev = p_prev;
         p_prev->next->prev = p_node;
         p_prev->next = p_node;
+        p_list->count++;
     }
     return;
 }
@@ -97,6 +104,7 @@ void lstDelete(LIST *p_list, NODE *p_node)
         p_node->prev->next = p_node->next;
         p_node->next->prev = p_node->prev;
     }
+    p_list->count--;
     return;
 }
 
@@ -115,6 +123,7 @@ int lstGetCount(LIST *p_list)
     return p_list->count;
 }
 
+/* index从1开始*/
 NODE *lstGet(LIST *p_list, int index)
 {
     int i = 1;
@@ -127,5 +136,74 @@ NODE *lstGet(LIST *p_list, int index)
     }
     return NULL;
 }
+
+/* test */
+//typedef struct{
+//    NODE node;
+//    int num;
+//}TEST_LSTLIB_NODE;
+
+//void lstLib_test(void)
+//{
+//    int i = 0, count = 0, free_heap_size;
+//    LIST list;
+//    TEST_LSTLIB_NODE *p_node = NULL;
+//    TEST_LSTLIB_NODE *p_lst_node = NULL;
+//    TEST_LSTLIB_NODE *p_lst_node_tmp = NULL;
+
+//    lstInit(&list);
+
+//    for (i = 0; i < 50; i++){
+//        free_heap_size = xPortGetFreeHeapSize();
+//        DDEBUG("free_heap_size:%d\r\n", free_heap_size);
+//        if (free_heap_size < sizeof(TEST_LSTLIB_NODE)){
+//            DDEBUG("%d\r\n", i);
+//            return;
+//        }
+//        p_node = (TEST_LSTLIB_NODE *)MALLOC(sizeof(TEST_LSTLIB_NODE));
+//        if(NULL == p_node){
+//            DERROR("malloc err, i:%d\r\n", i);
+//            return;
+//        }
+//        p_node->num = i;
+//        lstAddTail(&list, &p_node->node);
+//    }
+
+//    printf("LIST_FOR_EACH count:%d\r\n", lstGetCount(&list));
+//    LIST_FOR_EACH(TEST_LSTLIB_NODE, p_lst_node, &list){
+//        printf("%d ", p_lst_node->num);
+//    }
+//    printf("\r\n");
+
+//    printf("del:");
+//    LIST_FOR_EACH_SAFE(TEST_LSTLIB_NODE, p_lst_node, p_lst_node_tmp, &list){
+//        if (p_lst_node->num % 2 == 0){
+//            printf("%d ", p_lst_node->num);
+
+//            p_node = (TEST_LSTLIB_NODE *)MALLOC(sizeof(TEST_LSTLIB_NODE));
+//            p_node->num = p_lst_node->num + 10;
+//            lstInsert(&list, (NODE *)p_lst_node, &p_node->node);
+
+//            lstDelete(&list, (NODE *)p_lst_node);
+
+//            SAFE_FREE(p_lst_node);
+//        }
+//    }
+//    printf("\r\n");
+
+//    printf("LIST_FOR_EACH after delete:%d\r\n", lstGetCount(&list));
+//    LIST_FOR_EACH(TEST_LSTLIB_NODE, p_lst_node, &list){
+//        printf("%d ", p_lst_node->num);
+//    }
+//    printf("\r\n");
+
+//    printf("test lstGet\r\n");
+//    count = lstGetCount(&list);
+//    for (i = 1; i <= count; i++){
+//        p_node = (TEST_LSTLIB_NODE *)lstGet(&list, i);
+//        printf("%d ", p_node->num);
+//    }
+//    return;
+//}
 
 
