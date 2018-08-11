@@ -7,16 +7,19 @@
 #include "task.h"
 /* private header */
 #include "my_portable.h"
+#include "base.h"
 #include "debug.h"
 #include "cmd.h"
+#include "my_portable.h"
+#include "lstLib.h"
 
 static TaskHandle_t task_handle[10];
-
 
 void LedTask1(void *data)
 {
     BaseType_t ret;
     uint32_t notify_val = 0;
+
     while(1){
         /* 等待通知，任务进入阻塞状态 */
         //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
