@@ -57,9 +57,7 @@ void USART1_Init(u32 bound)
     USART_Init(USART1, &USART_InitStructure); //初始化串口1
 
     USART_Cmd(USART1, ENABLE);  //使能串口1
-
     USART_ClearFlag(USART1, USART_FLAG_TC);
-
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//开启相关中断
 
     //Usart1 NVIC 配置
@@ -116,16 +114,11 @@ void USART3_Init(u32 bound)
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-
-    // Configure USART3
     USART_Init(USART3, &USART_InitStructure);
-
-    // Enable USART1 Receive interrupts
-    USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-
-    // Enable the USART3
     USART_Cmd(USART3, ENABLE);
-
+    USART_ClearFlag(USART3, USART_FLAG_TC); //硬件复位后，先清除tc标志位，否则第一个字节数据会被覆盖
+    USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+    
     //Configure the NVIC Preemption Priority Bits
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
