@@ -19,6 +19,13 @@ void usart3_send(u8 *buf, int len)
     }
     return;
 }
+
+void usart3_send_char(u8 ch)
+{
+    USART_SendData(USART3, ch);
+    while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
+    return;
+}
 /*******************************************************************************
 * 函 数 名         : USART1_Init
 * 函数功能		   : USART1初始化函数
@@ -57,7 +64,7 @@ void USART1_Init(u32 bound)
     USART_Init(USART1, &USART_InitStructure); //初始化串口1
 
     USART_Cmd(USART1, ENABLE);  //使能串口1
-    USART_ClearFlag(USART1, USART_FLAG_TC);
+    USART_GetFlagStatus(USART1, USART_FLAG_TC); //硬件复位后，读取sr再写dr清除tc标志位，否则第一个字节数据会被覆盖
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//开启相关中断
 
     //Usart1 NVIC 配置
@@ -116,9 +123,9 @@ void USART3_Init(u32 bound)
 
     USART_Init(USART3, &USART_InitStructure);
     USART_Cmd(USART3, ENABLE);
-    USART_ClearFlag(USART3, USART_FLAG_TC); //硬件复位后，先清除tc标志位，否则第一个字节数据会被覆盖
+    USART_GetFlagStatus(USART3, USART_FLAG_TC); //硬件复位后，读取sr再写dr清除tc标志位，否则第一个字节数据会被覆盖
     USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-    
+
     //Configure the NVIC Preemption Priority Bits
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
@@ -145,7 +152,8 @@ void USART3_IRQHandler(void)                	//串口1中断服务程序
 	{
 		r = USART_ReceiveData(USART3); 	//读取接收到的数据
         fill_rec_buf_isr(r);
-	}
-	USART_ClearFlag(USART3, USART_FLAG_TC);
+	}else if (USART_GetFlagStatus(USART3, USART_IT_ORE) != RESET){ //清除溢出标志
+        USART_ReceiveData(USART3);
+    }
 }
 

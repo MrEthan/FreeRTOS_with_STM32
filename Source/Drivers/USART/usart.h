@@ -7,5 +7,5 @@
 void USART3_Init(u32 bound);
 void USART1_Init(u32 bound);
 void usart3_send(u8 *buf, int len);
-
+void usart3_send_char(u8 ch);
 #endif
