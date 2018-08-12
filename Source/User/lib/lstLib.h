@@ -32,5 +32,6 @@ NODE *lstFirst(LIST *p_list);
 NODE *lstNext(LIST *p_list, NODE *p_node);
 NODE *lstGet(LIST *p_list, int index);
 int lstGetCount(LIST *p_list);
+int lstEnpty(LIST *p_list);
 
 #endif

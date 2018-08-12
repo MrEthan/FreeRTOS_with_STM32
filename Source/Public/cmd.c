@@ -25,7 +25,7 @@ typedef struct {
 
 
 typedef struct{
-    const char *cmd_name;                          //命令字符串
+    const char *cmd_name;                      //命令字符串
     int max_args;                              //最大参数数目
     void (*handle)(int argc, void *cmd_arg);   //命令回调函数
     char *help;                                //帮助信息
@@ -263,7 +263,7 @@ void vTaskCmdEcho(void *pvParameters)
         //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         xTaskNotifyWait(UINT32_MAX, UINT32_MAX, &notify_val, portMAX_DELAY);
         if (EN_NOTIFY_ECHO == notify_val){
-            //printf("%c", cmd_analyze.rec_buf[cmd_analyze.rec_count - 1]);
+            printf("%c", cmd_analyze.rec_buf[cmd_analyze.rec_count - 1]);
             fflush(stdout);
         }else if(EN_NOTIFY_BACKSPACE == notify_val){
             BACKSPACE();

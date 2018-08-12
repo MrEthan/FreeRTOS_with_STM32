@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include "debug.h"
+#include "base.h"
 #include "my_portable.h"
 #include "lstLib.h"
+
+#define HEAD next
+#define TAIL prev
 
 void lstInit(LIST *p_list)
 {
@@ -135,6 +139,11 @@ NODE *lstGet(LIST *p_list, int index)
         }
     }
     return NULL;
+}
+
+int lstEnpty(LIST *p_list)
+{
+    return (p_list->HEAD == NULL);
 }
 
 /* test */
