@@ -1,6 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <stdint.h>
+
 typedef enum{
     EN_ERROR,
     EN_WARN,
@@ -8,6 +10,8 @@ typedef enum{
     EN_INFO,
 }enDebugLevel;
 
+#define ASSERT(expr) ((expr) ? (void)0 : debug_assert_failed((uint8_t *)__FILE__, __LINE__))
+    
 #define DERROR(format, args...) debug_print(EN_ERROR, __FUNCTION__, format, ##args)
 #define DWARN(format, args...) debug_print(EN_WARN, __FUNCTION__, format, ##args)
 #define DDEBUG(format, args...) debug_print(EN_DEBUG, __FUNCTION__, format, ##args)
@@ -16,6 +20,7 @@ typedef enum{
 void debug_print(int level, const char *func_name, const char *format, ...);
 void dumpBuffer(const char *describe, unsigned char *buf, int len);
 void dumpBuffer_char(const char *describe, char *buf, int len);
+void debug_assert_failed(uint8_t* file, uint32_t line);
 
 #if 0
 //可变参数

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdint.h>
 #include "debug.h"
 
 #define MAX_LEN_ONE_DEBUG_PRINT   256
@@ -47,26 +48,25 @@ void dumpBuffer(const char *describe, unsigned char *buf, int len)
 {
     int i = 0, count = 0;
 
-    printf("\n--------dumpBuffer begin----------\n");
     if (!buf || 0 > len){
-        printf("dempBuffer, para err. buf:%p, len:%d\n", buf, len);
+        printf("dumpBuffer, para err. buf:%p, len:%d\r\n", buf, len);
         return;
     }
     if (describe){
-        printf("%s, len:%d\n", describe, len);
+        printf("dump => %s, len:%d\r\n", describe, len);
     }else{
-        printf("len:%d\n", len);
+        printf("dump => len:%d\r\n", len);
     }
 
     for (i = 0; i < len; i++){
         if (16 == count){
             count = 0;
-            printf("\n");
+            printf("\r\n");
         }
         printf("%02x ", buf[i]);
         count++;
     }
-    printf("\n--------dumpBuffer end--------\n\n");
+    printf("\r\n\r\n");
     return;
 }
 
@@ -74,27 +74,34 @@ void dumpBuffer_char(const char *describe, char *buf, int len)
 {
     int i = 0, count = 0;
 
-    printf("\n--------dumpBuffer begin----------\n");
     if (!buf || 0 > len){
-        printf("dempBuffer, para err. buf:%p, len:%d\n", buf, len);
+        printf("dumpBuffer, para err. buf:%p, len:%d\r\n", buf, len);
         return;
     }
     if (describe){
-        printf("%s, len:%d\n", describe, len);
+        printf("dump => %s, len:%d\r\n", describe, len);
     }else{
-        printf("len:%d\n", len);
+        printf("dump => len:%d\r\n", len);
     }
 
     for (i = 0; i < len; i++){
         if (16 == count){
             count = 0;
-            printf("\n");
+            printf("\r\n");
         }
         printf("%c", buf[i]);
         count++;
     }
-    printf("\n--------dumpBuffer end--------\n\n");
+    printf("\r\n\r\n");
     return;
+}
+
+void debug_assert_failed(uint8_t* file, uint32_t line)
+{
+    printf("assert faile, file:%s, line:%d\r\n", file, line);
+    while(1){
+        ;
+    }
 }
 
 

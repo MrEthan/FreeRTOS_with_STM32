@@ -307,7 +307,7 @@ void vTaskCmdAnalyze(void *pvParameters)
        for(i=0; i < sizeof(cmd_list)/sizeof(cmd_list[0]); i++) {
            if(0 == strcmp(cmd_buf, cmd_list[i].cmd_name)) {
                 if(rec_arg_num<0 || rec_arg_num > cmd_list[i].max_args){
-                    printf("\r\ntoo much para.\r\n");
+                    printf("\r\n para err. \r\n");
                 }else{
                     printf("\r\n");
                     cmd_list[i].handle(rec_arg_num, (void *)cmd_analyze.cmd_arg);
@@ -317,10 +317,10 @@ void vTaskCmdAnalyze(void *pvParameters)
        }
 
        if(i >= sizeof(cmd_list)/sizeof(cmd_list[0])){
-           printf("\r\ncmd do not support.\r\n");
+           //printf("\r\n cmd do not support \r\n");
        }
        /* √¸¡Ó––Õ∑¥Ú”°# */
-       printf("#");
+       printf("\n\r#");
        fflush(stdout);
     }
 }
