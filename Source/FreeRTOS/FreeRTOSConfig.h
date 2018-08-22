@@ -46,10 +46,10 @@
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 72000000 )
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 5 )
-#define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 62 * 1024 ) )
+#define configMINIMAL_STACK_SIZE	( ( unsigned short ) 64 )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 15 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 16 )
-#define configUSE_TRACE_FACILITY	0
+#define configUSE_TRACE_FACILITY	1 //获取任务信息 usTaskGetSystemState()函数
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		1 // 空闲任务不主动让出CPU使用权(不允许用户任务与空闲任务共享优先级)
 

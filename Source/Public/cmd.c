@@ -40,14 +40,24 @@ static cmd_analyze_struct cmd_analyze;
 static TaskHandle_t xCmdAnalyzeHandle;
 static TaskHandle_t xCmdEchoHandle;
 
+extern void get_rtos_sys_state(void);
+
 void printf_hello(int32_t argc, void * cmd_arg);
 void handle_arg(int32_t argc, void * cmd_arg);
+void rtos_status(int32_t argc, void *cmd_arg);
 
 const cmd_list_struct cmd_list[]={
 /* 命令    参数数目    处理函数      帮助信息                        */
 {"hello",   0,      printf_hello,   "hello                      -打印HelloWorld!"},
 {"arg",     8,      handle_arg,     "arg<arg1> <arg2> ...      -测试用, 打印输入的参数"},
+{"status",  0,      rtos_status,    "get rots status           -测试用, 打印rtos状态"},
 };
+
+static void rtos_status(int32_t argc, void *cmd_arg)
+{
+    get_rtos_sys_state();
+    return;
+}
 
 void printf_hello(int32_t argc, void *cmd_arg)
 {
@@ -329,13 +339,13 @@ void cmd_create_task(void)
 {
     BaseType_t ret = pdPASS;
 
-    ret = xTaskCreate(vTaskCmdEcho, "cmd_echo_task", 1024, NULL, NORMAL_TASK_PRIORITY, &xCmdEchoHandle);
+    ret = xTaskCreate(vTaskCmdEcho, "cmd_echo_task", 128, NULL, NORMAL_TASK_PRIORITY, &xCmdEchoHandle);
     if (pdPASS != ret){
         DERROR("create cmd echo task failed, ret:%d\r\n", ret);
     }
 
     /* 创建cmd任务 */
-    ret = xTaskCreate(vTaskCmdAnalyze, "cmd_analyze_task", 1024, NULL, NORMAL_TASK_PRIORITY, &xCmdAnalyzeHandle);
+    ret = xTaskCreate(vTaskCmdAnalyze, "cmd_analyze_task", 256, NULL, NORMAL_TASK_PRIORITY, &xCmdAnalyzeHandle);
     if (pdPASS != ret){
         DERROR("create cmd analyze task failed, ret:%d\r\n", ret);
     }

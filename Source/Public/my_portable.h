@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include "FreeRTOS.h"
+#include "task.h"
 
 #define MALLOC(x)  pvPortMalloc(x)
 #define FREE(x)    vPortFree(x)

@@ -14,7 +14,6 @@
 #include "lstLib.h"
 
 static TaskHandle_t task_handle[10];
-static HeapRegion_t heap_region[] = {{(uint8_t *)0x2000B000, 0x5000}, {NULL, 0}};
 
 void LedTask1(void *data)
 {
@@ -31,14 +30,27 @@ void LedTask1(void *data)
     }
 }
 
+//函数返回一个数对应的Fibonacci数
+int fibonacci(int n)
+{
+    if(n==0 || n==1)//递归边界
+        return 1;
+    vTaskDelay(1000);
+    printf("statusn:%d", n);
+    return fibonacci(n-1) + fibonacci(n-2);//递归公式
+}
+
 void LedTask2(void *data)
 {
+    int fib = 0;
     while(1){
         led_toggle_1();
         /* 通知task1 */
         //xTaskNotifyGive(task_handle[0]);
         xTaskNotify(task_handle[0], 2, eSetBits);
-        vTaskDelay(1000);
+        fib = fibonacci(100);
+        printf("fib:%d\r\n", fib);
+        vTaskDelay(100);
     }
 }
 
@@ -52,19 +64,16 @@ int main(void)
     //USART1_Init(115200);
     USART3_Init(115200);
 
-    /* 初始化堆内存 */
-    vPortDefineHeapRegions(heap_region);
-
     /* 创建LED1任务 */
     xTaskCreate(LedTask1,      // 任务函数指针
                 "LED_TASK1",   // 任务名称
-                1024,            // 堆栈深度(字)
+                128,            // 堆栈深度(字)
                 NULL,          // 任务参数为空
                 NORMAL_TASK_PRIORITY,             // 任务优先级
                 &task_handle[0]);        // 任务句柄
 
     /* 创建LED2任务 */
-    xTaskCreate(LedTask2, "LED_TASK2", 1024, NULL, NORMAL_TASK_PRIORITY, &task_handle[1]);
+    xTaskCreate(LedTask2, "LED_TASK2", 128, NULL, NORMAL_TASK_PRIORITY, &task_handle[1]);
 
     /* 创建cmd任务 */
     cmd_create_task();
